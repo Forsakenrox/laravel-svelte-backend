@@ -39,10 +39,10 @@ class AuthController extends Controller
     {
         if (!Auth::attempt($request->only(['email', 'password']))) {
             $errorMessages = new \Illuminate\Support\MessageBag;
-            return $errorMessages->merge([
+            return response($errorMessages->merge([
                 'message' => 'wrong credentials',
                 'errors' => ['credentials' => 'no valid credentials']
-            ]);
+            ]),401);
         }
         $user = User::where('email', $request->email)->first();
         return ['token' => $user->createToken("API TOKEN")->plainTextToken];
