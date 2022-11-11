@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostCollection;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -14,8 +15,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        sleep(1);
-        return Post::all();
+        return new PostCollection(Post::all());
+        // return Post::all();
     }
 
     /**
@@ -36,7 +37,6 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        sleep(1);
         $request->validate([
             'name' => ['required', 'min:5'],
             'text' => ['required', 'min:20']
@@ -46,7 +46,8 @@ class PostController extends Controller
         $post->text = $request->text;
         $post->save();
 
-        return "ok";
+        // return ['message' => "success"];
+        return ['message' => "success", "data" => $post];
         // return response("1", 500);
     }
 
@@ -58,7 +59,6 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        sleep(1);
         $post = Post::find($id);
         return $post;
     }
@@ -83,7 +83,6 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        sleep(1);
         $request->validate([
             'name' => ['required', 'min:5', 'alpha'],
             'text' => ['required', 'min:20']
@@ -93,7 +92,7 @@ class PostController extends Controller
         $post->text = $request->text;
         $post->save();
 
-        return "ok";
+        return ['message' => "success", "data" => $post];
     }
 
     /**
@@ -104,8 +103,7 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        sleep(1);
-        Post::find($id)->delete();
-        return "ok";
+        $post = Post::find($id)->delete();
+        return ['message' => "success", "data" => $post];
     }
 }
