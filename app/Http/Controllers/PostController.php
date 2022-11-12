@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PostCollection;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PostController extends Controller
 {
@@ -15,8 +17,14 @@ class PostController extends Controller
      */
     public function index()
     {
-        return new PostCollection(Post::all());
-        // return Post::all();
+        $users = QueryBuilder::for(Post::class)
+            ->allowedSorts("id")
+            ->allowedFilters('name', 'text')
+            // ->allowedFilters(AllowedFilter::)
+            // dd($users->toSql());
+            ->toSql();
+        dd($users);
+        return new PostCollection($users);
     }
 
     /**
@@ -39,7 +47,7 @@ class PostController extends Controller
     {
         $request->validate([
             'name' => ['required', 'min:5'],
-            'text' => ['required', 'min:20']
+            'text' => ['required', 'min:5']
         ]);
         $post = new Post;
         $post->name = $request->name;

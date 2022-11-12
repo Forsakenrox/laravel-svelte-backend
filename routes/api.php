@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    sleep(1);
+    // sleep(1);
     Route::resource('posts', PostController::class);
 });
 Route::post('/auth/register', [AuthController::class, 'register']);
