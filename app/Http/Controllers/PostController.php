@@ -17,13 +17,22 @@ class PostController extends Controller
      */
     public function index()
     {
+        // dd(request()->all());
         $users = QueryBuilder::for(Post::class)
             ->allowedSorts("id")
-            ->allowedFilters('name', 'text')
+            ->allowedFilters(
+                'name',
+                'text',
+                AllowedFilter::callback("search", function ($query, $value) {
+                    $query->where('name', "LIKE", "%$value%");
+                    $query->orWhere('text', "LIKE", "%$value%");
+                })
+            )
             // ->allowedFilters(AllowedFilter::)
             // dd($users->toSql());
-            ->toSql();
-        dd($users);
+            // ->toSql();
+            ->get();
+        // dd($users);
         return new PostCollection($users);
     }
 
